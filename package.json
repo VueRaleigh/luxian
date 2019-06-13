@@ -1,14 +1,20 @@
 {
   "name": "luxian",
-  "description": "A Vue.js plugin",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "description": "A routes helper plugin for Vue.js",
   "author": "Mitch Amiano <mcamiano@ncsu.edu>",
   "license": "MIT",
   "private": true,
+  "main": "./dist/index.js",
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "test": "jest"
+    "dev": "cross-env NODE_ENV=development webpack --mode development",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "prepare": "yarn build && yarn cc",
+    "test": "jest --watch --coverage",
+    "cc": "jest --coverage"
   },
   "dependencies": {
     "vue": "^2.6.10"
@@ -31,6 +37,7 @@
     "vue-server-renderer": "^2.6.10",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4",
     "webpack-dev-server": "^3.7.1"
   },
   "browserslist": {
@@ -46,14 +53,14 @@
   },
   "jest": {
     "roots": [
-       "<rootDir>"
+      "<rootDir>"
     ],
     "modulePaths": [
-       "<rootDir>",
-       "<rootDir>/src"
+      "<rootDir>",
+      "<rootDir>/src"
     ],
     "moduleDirectories": [
-       "node_modules"
+      "node_modules"
     ],
     "moduleFileExtensions": [
       "js",
@@ -69,7 +76,9 @@
     },
     "snapshotSerializers": [
       "<rootDir>/node_modules/jest-serializer-vue"
-    ]
+    ],
+    "coverageDirectory": "./coverage",
+    "collectCoverage": true
   },
   "resolutions": {
     "babel-core": "7.0.0-bridge.0"
