@@ -1,0 +1,77 @@
+{
+  "name": "luxian",
+  "description": "A Vue.js plugin",
+  "version": "1.0.0",
+  "author": "Mitch Amiano <mcamiano@ncsu.edu>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "test": "jest"
+  },
+  "dependencies": {
+    "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-stage-3": "^7.0.0",
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "babel-jest": "^24.8.0",
+    "babel-loader": "^8.0.6",
+    "cross-env": "^5.2.0",
+    "css-loader": "^3.0.0",
+    "file-loader": "^4.0.0",
+    "flush-promises": "^1.0.2",
+    "jest": "^24.8.0",
+    "jest-serializer-vue": "^2.0.2",
+    "vue-jest": "^3.0.4",
+    "vue-loader": "^15.7.0",
+    "vue-server-renderer": "^2.6.10",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.34.0",
+    "webpack-dev-server": "^3.7.1"
+  },
+  "browserslist": {
+    "production": [
+      "> 1%",
+      "last 2 versions",
+      "not ie <= 8"
+    ],
+    "development": [
+      "last 1 version",
+      "not ie <= 8"
+    ]
+  },
+  "jest": {
+    "roots": [
+       "<rootDir>"
+    ],
+    "modulePaths": [
+       "<rootDir>",
+       "<rootDir>/src"
+    ],
+    "moduleDirectories": [
+       "node_modules"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "snapshotSerializers": [
+      "<rootDir>/node_modules/jest-serializer-vue"
+    ]
+  },
+  "resolutions": {
+    "babel-core": "7.0.0-bridge.0"
+  }
+}

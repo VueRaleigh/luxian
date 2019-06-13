@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Component renders correctly 1`] = `
+<div>
+  <h1>
+    Test component
+  </h1>
+   
+  <label
+    for="b1"
+  >
+    Click to fetch results
+  </label>
+   
+  <button
+    id="b1"
+  />
+   
+  <p>
+    this is a test component with a ""
+  </p>
+</div>
+`;
