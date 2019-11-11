@@ -5,9 +5,23 @@
   "author": "Mitch Amiano <mcamiano@ncsu.edu>",
   "license": "MIT",
   "private": true,
-  "main": "./dist/index.js",
+  "module": "dist/luxian.esm.js",
+  "unpkg": "dist/luxian.js",
+  "main": "dist/luxian.js",
+  "jsnext:main": "dist/luxian.js",
   "files": [
-    "dist/*"
+    "dist/*.js"
+  ],
+  "homepage": "https://vueraleigh.github.io/luxian/",
+  "repository": {
+    "type": "https",
+    "url": "git+https://github.com/vueraleigh/luxian"
+  },
+  "bugs": {
+    "url": "https://github.com/vueraleigh/luxian/issues"
+  },
+  "keywords": [
+    "luxian"
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack --mode development",
@@ -16,10 +30,9 @@
     "test": "jest --watch --coverage",
     "cc": "jest --coverage"
   },
-  "dependencies": {
-    "vue": "^2.6.10"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "vue": "^2.6.10"
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-stage-3": "^7.0.0",
@@ -50,37 +63,5 @@
       "last 1 version",
       "not ie <= 8"
     ]
-  },
-  "jest": {
-    "roots": [
-      "<rootDir>"
-    ],
-    "modulePaths": [
-      "<rootDir>",
-      "<rootDir>/src"
-    ],
-    "moduleDirectories": [
-      "node_modules"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "<rootDir>/node_modules/jest-serializer-vue"
-    ],
-    "coverageDirectory": "./coverage",
-    "collectCoverage": true
-  },
-  "resolutions": {
-    "babel-core": "7.0.0-bridge.0"
   }
 }
