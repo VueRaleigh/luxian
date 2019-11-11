@@ -1,68 +1,120 @@
 # 路线 Lùxiàn
 
+Lùxiàn is a Vue plugin enabling a simple syntax to access API endpoints. 
 
-Lùxiàn is syntactic sugar for working with named, parameterized route endpoint URLs within a Vue application.
+```js
+let newResource = await this.$api.wayCoolResourcesStore.post(payload);
+```
 
-## Abstract - 路线制作 Lùxiàn zhìzuò - Route production
-
-Lùxiàn is a Vue plugin to make it easy to formulate URL endpoint requests.
-
-Lùxiàn provides a route resolver similar to the `route` helpers provided in MVC
-frameworks such as Ruby on Rails or Laravel.
-
-It is a good practice to avoid sprinkling in hard-coded resource
-locations throughout source code.  Simple configuration tactics such as
-dot files and route maps can avoid unnecessary direct dependencies
-on fixed URL paths. Lùxiàn brings these configuration items forward
-into the client code, making it easy to use symbolic names and
-parameters rather than fixing the URI paths in code.
-
+It is a terrible practice to hard-code URL paths in source code.
+This package combines a light-weight URL helper with an HTTP handler 
+to completely eliminate hard-coded references to URL paths.
 
 ## Quickstart
-
-Get a feel for how it works using a CodePen
-
-**TODO**
-
-
-
-## Installing and Configuration
 
 You can install Lùxiàn via `npm install luxian` or `yarn add luxian`
 
 *The package and file names use non-accented characters.*
 
+```js
+import Axios from 'axios'
+import Luxian from 'luxian'
+import routeList from 'routeList'
+
+Vue.use(Luxian, {
+    httpHandler: Axios,
+    urlBase: 'https://www.somedoma.in/some/path',
+    routeList
+})
 ```
-import Luxian from 'luxian';
 
-const luxian = new Luxian(options);
+### Route List format
 
-Vue.use(luxian);
+The format for route lists is derived from Laravel's route map.
+The route list can either be exported to a `.json` file and bundled statically,
+or loaded via a route.
+
+```js
+export default {
+    routes: {
+        "current-user": 'api/users/current',
+        "application-routes": 'api/application/routes',
+        "user": "api/users/{id}",
+        "some_strange-name.usedHere": "some/strange/{name}/here",
+        "surveyResults.search": "results/survey/",
+        "postal-codes": "api/codes/postal/{countryCode}"
+    }
+}
 ```
 
-**TODO** Specify the options: url map, http handler, services' base urls.
+By default, route list property names are normalized to convert camelCase, snake_case, and dot.notation into fully hyphenated-case names. 
 
-**Caveat** the current prototyped code embeds Axios as the HTTP handler.  This dependency aught to be made more distinct or at least more configurable.
+### Client Code Examples
 
-**Caveat** the current prototyped code assumes one base url, and knows nothing of other services.
+Fetch postal codes, and do something with the response.
+The proxied http methods return the same Promises of the `httpHandler` methods:
+
+```
+this.$api.withParams({countryCode: 'CA'}).postalCodes.get().then((response) => {
+    this.doSomethingWithZipCodes(response);
+}).catch((errors)=> {
+    this.$emit('app-error', errors);
+})
+```
+
+Post something to some strange URL used here. 
+By default, URL names are normalized to allow for either `['hypenated-name']` or `.camelCase` access:
+
+```js
+const payloadObject = { parm1: 1, parm2: 2 };
+
+let result = await this.$api.someStrangeNameUsedHere.post(payloadObject);
+
+let otherResult = await this.$api['some-strange-name-used-here'].post(payloadObject);
+```
+
+Do a search with a query string.
+Query values are converted via `encodeURIComponent` before being included:
+
+```js
+this.$api.withQuery({ subjects: 'MAT NE' }).surveyResultsSearch.get({ payload... }).then( 
+   // sends to results/survey?subjects=MAT%20NE
+)
+```
+
+## Required Parameters and Options
+
+- httpHandler
+    - required
+    - The http handler.
+    - _The plugin was written for Axios. It has not yet been adapted for other handlers._
+- urlBase
+    - required
+    - The base URL path used to resolve the rest of the application routes.
+    - _The plugin assumes one base URL. It has not yet been adapted to deal with multiple services._
+- routeList
+    - required
+    - An object, the keys of which are URL names and the values of which are simple URL templates.
+- normalizer
+    - optional
+    - Function used to translate camelCase javascript identifiers into the format of keys of the routeList.
 
 ## Usage Synopsis
 
 ### $api
 
-Lùxiàn exposes an `$api` property to all components. Call your API
-endpoints by name, optionally attaching URL path segment parameters,
-query string arguments, or URL document fragment identifiers.
+Lùxiàn exposes a [fluent builder interface](https://martinfowler.com/bliki/FluentInterface.html)
+via an `$api` property. Call your API
+endpoints by an abstract name, given required and optional parameters,
+query string arguments, and/or URL document fragment identifiers.
 
-```
+```js
 this.$api
     .withParams(paramsObject)
 
     .withQuery(queryArgsObject)
 
-    .withFragment(fragmentString)
-
-    .yourOwnAPIEnpointNameHere
+    .APIEnpointName
 
     .post(payloadObject)
 
@@ -73,68 +125,97 @@ this.$api
     .finally(cleanupCallback)
 ```
 
-The `$api` property is a Javascript `Proxy` object which takes any
-arbitrary property name.
+Internally, the `$api` property is implemented as a Javascript 
+`Proxy` object. Accessing any property name invokes the plugin.
 
-If the name is one of the binding methods (`withParams`, `withQuery`,
-or `withFragment`), a new Proxy is returned which is bound to the given argument.
-The `withParams` and `withQuery` each accept an Object, whose keys and
-values correspond to URL parameters or query string arguments.
-The `withFragment` appends its String argument as a `#docfragment` to
-the end of a fully resolved URL.
+#### withParams and withQuery
 
-**TODO** withFragment is not yet written
+If one of the optional binding methods `withParams` or `withQuery` is accessed,
+a new Proxy is returned with URL parameters or query bound to the given object.
 
-If the name is not one of the three binding methods, the name is
-resolved via a map of API endpoints. The endpoint map is configured
-either at compile-time via the initialization options, or dynamically
-via a callback at runtime.
+The `withParams`  method accepts an Object whose values are used to replace URL parameters in the routeList URL templates.
+The keys of the object passed to `withParams` correspond exactly to parameters as referenced in the URL template.
+URL template parameters which are not matched by a `withParams` Object key are left as-is are silently ignored.
+Parameters which are not matched by any property are left as-is in the rendered URL string when it is finally resolved.
 
-Lùxiàn then returns an HTTP handler attached to the given endpoint.
+The `withQuery` method accepts an Object whose keys and values are used to
+compose a `?key1=value1&key2=value2` style query string. Object property names
+are used as-is. Values are converted via `encodeURIComponent` before being included in the query string.
+There is not presently a means of including a lone property name or other string.
 
-**TODO** **Caveat** By default, this will be a simple JS Object wrapper around a Axios object,
-which exposes HTTP methods `get`, `post`, `delete`, and `put`. This
-wrapper should either be complete, or be removed.
+#### .query and .params
 
-### $makeUrl
+The binding methods completely replace their respective bindings. 
+Although the methods may be chained fluently, their effects are not additive. 
+To add new parameters to existing parameters, you can get the current `params` property, and use the spread operator to pass it back to `withParams`.
+The same can be done with `query` and `withQuery`: 
 
-**TODO** still fiddling with the naming and signature of this feature.
-$makeUrl, $urlTo.route('name',params,qs,frag) ... ?
+```js
+let endpoint = this.$api.withParams({countryCode: 'US'}).withQuery({district: 'K'});
 
-The plugin also exposes a `$makeUrl` property, which allows client code
-to resolve URL paths directly, without wrapping with an HTTP handler.
-The helper object can also be manipulated to change the base URL, the
-endpoint map, etc.
+endpoint = endpoint.withParams({contryCode: 'CA'}) // default behavior, replaces params
+    .withQuery({ ...endpoint.query, ldu: somevar});  // use spread operator to extend query
 
-
-### Examples
-
-```
-this.$api.withParams({ zip: '08816' }).zip_codes.get().then((result) =>
-{
-    this.doSomethingWithZipCodes(result);
-}).catch((problems)=> {
-    this.$emit('app-error', problems);
-})
+// suppose somevar is '0B1'
+let codes = await endpoint.postalCodes.get(); //  {urlBase}/api/codes/postal/CA?district=K&ldu=0B1
 ```
 
-```
-this.$api.student_survey.post({ payload... }).then( 
-   ... and so forth ...
+#### API Endpoint Name == Route List URL Template Name
 
-this.$api.withQuery({ search: { course: 'NE 453' }}).student_survey.get({ payload... }).then( 
-   ... and so on ...
+If a `$api` property name is not one of the three binding methods, the property name is assumed to be the name of a route template in `routeList`. 
+The name is normalized (by default to a hyphenated-string) and the corresponding route in `routeList` is accessed.
+If not found, an 'Ooops' error is thrown.
+Otherwise a Proxy for the `httpHandler` object is returned, which is bound to the named route URL template.
+
+_The http handler Proxy is the last step in the fluent builder interface. All subsequent property accesses refer to the http handler or its Proxy. 
+Specifically, you cannot specify more `withParams` or `withQuery` after referencing the endpoint name._
+
+The proxy object traps the http handler's methods `get`, `post`, `put`, `delete` and `patch`, with the usual semantics. 
+Additionally, a trap is placed on the name `asLink`, which returns a resolved URL as might be used in an HTML anchor.
+Other methods and property references are passed through to the underlying `httpHandler`.
+
+### $api.$routeHelper
+
+Exposes a copy of the route helper class used to look up and 
+resolve URL paths. The helper object can be manipulated 
+to change the base URL, the endpoint map, etc.
+
+_At this time, there is no means to replace or swap the route helper instance. It may be a nice feature to point to "serverless" services on different platforms._
+
+### $api.$httpHandler
+
+Exposes the object configured as the http handler.
+
+## Laravel Application Routes 
+
+A simple Laravel project can expose the application's`routes/` route map via an API endpoint.
+
+```php
+    Route::name('application-routes')->get('application/routes', function () {
+        $routes = [];
+
+        foreach (Route::getRoutes() as $route) {
+            $routes[str_replace(['.', '_'], '-', $route->getName())] = $route->uri();
+        }
+
+        return response()->json(['routes' => $routes]);
+    });
 ```
 
-Where `zip_codes` and `student_survey` are both named API endpoints with
-known parameters.
+Loading the route list from an api endpoint poses a sort of chicken-and-egg problem. 
+
+The application must ensure that routes are loaded and the plugin is configured prior to attempting any access to `$api`. 
+
+Alternatively, a console command can be used to export the route list as a file,
+and the file included in an application bundle, merged into a static HTML page server-side, 
+or read in as a static json resource.
 
 
 ## Contributing
 
-TBD
-
-TBD guidance for contributors
+Please contact the author. Fork the repo and submit a PR if you are motivated to do so!
+Documentation improvements are very welcome. 
+In terms of features my intention is to keep this package lean and self-contained.
 
 ## License summary
 
@@ -164,4 +245,6 @@ SOFTWARE.
 
 ## About the name
 
-Lùxiàn is the Pinyin spelling of the standard Chinese word meaning "Route".
+The author was studying standard Chinese at the time the package was conceived. 
+
+Lùxiàn is the Pinyin spelling of a word meaning "path" or "route".
