@@ -90,9 +90,9 @@ describe('Luxian.test.js', () => {
   it('can formulate PUT and POST requests with parameters, that take a payload', async () => {
     expect.assertions(8);
     expect(await component.$api.user.put({foo: 1, bar: 2})).toEqual({foo: 1, bar: 2});
-    expect(mockaxios.put).toHaveBeenCalledWith( lookupOptions.urlBase + '/api/users/', {foo: 1, bar: 2});
+    expect(mockaxios.put).toHaveBeenCalledWith( pluginOptions.urlBase + '/api/users/', {foo: 1, bar: 2});
     expect(await component.$api.withParams({id: 2}).user.post({foo: 3, bar: 4})).toEqual({foo: 3, bar: 4});
-    expect(mockaxios.post).toHaveBeenCalledWith( lookupOptions.urlBase + '/api/users/2', {foo: 3, bar: 4});
+    expect(mockaxios.post).toHaveBeenCalledWith( pluginOptions.urlBase + '/api/users/2', {foo: 3, bar: 4});
     expect(mockaxios.get).toHaveBeenCalledTimes(0);
     expect(mockaxios.put).toHaveBeenCalledTimes(1);
     expect(mockaxios.post).toHaveBeenCalledTimes(1);
@@ -103,27 +103,27 @@ describe('Luxian.test.js', () => {
   it('can formulate a request with replaceable parameters, and return it as a link', async () => {
     expect.assertions(1);
     expect(await component.$api.withParams({id: 1234}).user.asLink()).toEqual(
-        lookupOptions.urlBase + '/api/users/1234'
+        pluginOptions.urlBase + '/api/users/1234'
     );
   });
 
   it('can formulate a DELETE request', async () => {
     expect.assertions(2);
     expect(await component.$api.withParams({id: 123}).user.delete()).toEqual('called delete');
-    expect(mockaxios.delete).toHaveBeenCalledWith( lookupOptions.urlBase + '/api/users/123');
+    expect(mockaxios.delete).toHaveBeenCalledWith( pluginOptions.urlBase + '/api/users/123');
   });
 
   it('ignores unused request parameters', async () => {
     expect.assertions(1);
     expect(await component.$api.withParams({id: 1234, foobar: 54321}).user.asLink()).toEqual(
-        lookupOptions.urlBase + '/api/users/1234'
+        pluginOptions.urlBase + '/api/users/1234'
     );
   });
 
   it('can include ?y=x query string parameters', async () => {
     expect.assertions(1);
     expect(await component.$api.withQuery({search: 1234}).currentUser.asLink()).toEqual(
-      lookupOptions.urlBase + '/api/users/current?search=1234'
+      pluginOptions.urlBase + '/api/users/current?search=1234'
     );
   });
 
