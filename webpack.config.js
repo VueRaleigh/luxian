@@ -6,7 +6,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: 'luxian.js'
+    library: 'luxian',
+    libraryTarget: 'umd',
+    filename: 'luxian.js',
+    umdNamedDefine: true
   },
   module: {
     rules: [

@@ -22,10 +22,7 @@ import RouteHelper from './RouteHelper';
 // }
 //
 export default {
-    // The install method is all that needs to exist on the plugin object.
-    // It takes the global Vue object as well as user-defined options.
-    install(Vue, options) {
-
+  install: function(Vue, options) {
         if (!(options.urlBase && options.httpHandler && options.routesList)) {
             throw 'Lookups requires urlBase, httpHandler, and routesList options';
         }
