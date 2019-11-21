@@ -5,7 +5,6 @@
   "author": "Mitch Amiano <mcamiano@ncsu.edu>",
   "license": "MIT",
   "private": true,
-  "type": "module",
   "module": "dist/luxian.esm.js",
   "unpkg": "dist/luxian.js",
   "main": "dist/luxian.js",
