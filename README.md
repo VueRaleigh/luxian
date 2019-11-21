@@ -31,8 +31,8 @@ Vue.use(Luxian, {
 ### Route List format
 
 The format for route lists is derived from Laravel's route map.
-The route list can either be exported to a `.json` file and bundled statically,
-or loaded via a route.
+The route list can either be exported to a `.json` file and bundled
+or loaded via a well-known route.
 
 ```js
 export default {
@@ -51,6 +51,8 @@ By default, route list property names are normalized to convert camelCase, snake
 
 ### Client Code Examples
 
+#### Get
+
 Fetch postal codes, and do something with the response.
 The proxied http methods return the same Promises of the `httpHandler` methods:
 
@@ -61,6 +63,19 @@ this.$api.withParams({countryCode: 'CA'}).postalCodes.get().then((response) => {
     this.$emit('app-error', errors);
 })
 ```
+
+#### Get with Query String
+
+Do a search with a query string.
+Query values are converted via `encodeURIComponent` before being included:
+
+```js
+this.$api.withQuery({ subjects: 'MAT NE' }).surveyResultsSearch.get({ payload... }).then( 
+   // sends to results/survey?subjects=MAT%20NE
+)
+```
+
+#### Post
 
 Post something to some strange URL used here. 
 By default, URL names are normalized to allow for either `['hypenated-name']` or `.camelCase` access:
@@ -73,13 +88,11 @@ let result = await this.$api.someStrangeNameUsedHere.post(payloadObject);
 let otherResult = await this.$api['some-strange-name-used-here'].post(payloadObject);
 ```
 
-Do a search with a query string.
-Query values are converted via `encodeURIComponent` before being included:
+#### asLink (anchor url)
 
-```js
-this.$api.withQuery({ subjects: 'MAT NE' }).surveyResultsSearch.get({ payload... }).then( 
-   // sends to results/survey?subjects=MAT%20NE
-)
+```html
+<img src="$api.withParams(name:'sylvester').catImageLibrary.asLink()" alt="Sylvester the cat"/>
+blah blah <a :href="$api.someNamedLocation.asLink()">Go to some location</a> blah blah
 ```
 
 ## Required Parameters and Options
@@ -116,7 +129,7 @@ this.$api
 
     .APIEnpointName
 
-    .post(payloadObject)
+    .post(payloadObject) // or .get(), .delete(), .put(payload), .asLink()
 
     .then(successCallback)
 
