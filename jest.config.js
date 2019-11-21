@@ -33,11 +33,14 @@
     // "resolutions": {
       // "babel-core": "7.0.0-bridge.0"
     // },
+    "testMatch": [
+          '**/jest/**/*.test.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
+    ],
     "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-      "^.+\\.vue$": "<rootDir>/node_modules/vue-jest"
-    }
-    // "transformIgnorePatterns": ["<rootDir>/node_modules/"]
+      "^.+\\.(js)?$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.vue$": "<rootDir>/node_modules/vue-jest",
+    },
+    "transformIgnorePatterns": ["<rootDir>/node_modules/"]
     // transformIgnorePatterns: ["/node_modules/(?!(lodash-es|other-package|next-es-pkg)/)"]
     // transformIgnorePatterns: ["/node_modules/(?!(lodash-es)/)"],
 };
