@@ -24,7 +24,7 @@ import RouteHelper from './RouteHelper';
 export default {
   install: function(Vue, options) {
         if (!(options.urlBase && options.httpHandler && options.routesList)) {
-            throw 'Lookups requires urlBase, httpHandler, and routesList options';
+            throw 'Luxian requires urlBase, httpHandler, and routesList options. "'+JSON.stringify(options)+ '" given.';
         }
 
         const urlBase = options.urlBase + ((!RegExp('.*/$').test(options.urlBase)) ? '/' : '');
