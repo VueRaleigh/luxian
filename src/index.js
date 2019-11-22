@@ -7,19 +7,9 @@ import RouteHelper from './RouteHelper';
 // this.$api.withQuery({search: 'someSearchString'}).customersIndex.get()
 //
 // Getting Links
-// Since api endpoints can be loaded asynchronously,
-// they should not be assumed to be immediately available.
-// You can use Promise.then to set a data model element, and rely on Vue's reactivity:
-// this.$api.customerShow.asLink().then((link) => {
-//     this.myImportantLink = link;
-// });
-//
-// Or make use of await (only in the context of an async function body
-// async somemethod() {
-//      ...
-//     this.myImportantLink = await this.$api.currentUser.asLink();
-//      ...
-// }
+// The route list is assumed to be loaded prior to plugin initialization,
+// so the asLink method is not async:
+// this.myImportantLink = this.$api.currentUser.asLink();
 //
 export default {
   install: function(Vue, options) {
@@ -83,7 +73,7 @@ export default {
                 const urlName = normalize(name);
 
                 const trappedInterfaces = {
-                    async asLink() {
+                    asLink() {
                         return urlHelper().setQuery(reciever.query).route(urlName, reciever.params);
                     },
                     async get() {

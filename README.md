@@ -90,6 +90,8 @@ let otherResult = await this.$api['some-strange-name-used-here'].post(payloadObj
 
 #### asLink (anchor url)
 
+Use asLink() to get the rendered route. Unlike the other methods, this one is not async:
+
 ```html
 <img src="$api.withParams(name:'sylvester').catImageLibrary.asLink()" alt="Sylvester the cat"/>
 blah blah <a :href="$api.someNamedLocation.asLink()">Go to some location</a> blah blah
