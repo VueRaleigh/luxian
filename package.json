@@ -26,7 +26,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack --mode development",
     "build": "cross-env NODE_ENV=production webpack --mode production",
-    "prepare": "yarn build && yarn cc",
+    "prepare": "yarn build",
     "test": "jest --watch --coverage",
     "cc": "jest --coverage"
   },
