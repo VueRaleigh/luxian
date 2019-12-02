@@ -12,7 +12,8 @@ import RouteHelper from './RouteHelper';
 // this.myImportantLink = this.$api.currentUser.asLink();
 //
 export default {
-  install: function(Vue, options) {
+  install(Vue, options) {
+
         if (!(options.urlBase && options.httpHandler && options.routesList)) {
             throw 'Luxian requires urlBase, httpHandler, and routesList options. "'+JSON.stringify(options)+ '" given.';
         }
@@ -31,7 +32,7 @@ export default {
         });
         const urlHelper = () => new RouteHelper(urlBase, normalizedRoutes);
 
-        Vue.prototype.$api = new Proxy({}, {
+        const apiproxy = new Proxy({}, {
             query: {},
 
             params: {},
@@ -105,5 +106,7 @@ export default {
                 return wrapper;
             }
         });
+
+        Object.defineProperty(Vue.prototype, '$api', { get: () => apiproxy });
     }
 };
