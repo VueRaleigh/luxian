@@ -4,7 +4,7 @@
   "description": "A routes helper plugin for Vue.js",
   "author": "Mitch Amiano <mcamiano@ncsu.edu>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "module": "dist/luxian.esm.js",
   "unpkg": "dist/luxian.js",
   "main": "dist/luxian.js",
