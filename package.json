@@ -1,5 +1,5 @@
 {
-  "name": "luxian",
+  "name": "@vueraleigh/luxian",
   "version": "0.0.1",
   "description": "A routes helper plugin for Vue.js",
   "author": "Mitch Amiano <mcamiano@ncsu.edu>",
