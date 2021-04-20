@@ -21,7 +21,12 @@ import Luxian from '@/index';
 const pluginOptions = {
   httpHandler: mockaxios,
   urlBase: 'https://fakehost/fakepath',
-  routesList: mockRouteList.data.data.routes
+  routesList: mockRouteList.data.data.routes,
+  rateLimitGET: 100,
+  rateLimitPOST: 200,
+  rateLimitPUT: 300,
+  rateLimitPATCH: 400,
+  rateLimitDELETE: 500,
 };
 localVue.use(Luxian, pluginOptions);
 

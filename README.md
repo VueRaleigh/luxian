@@ -113,6 +113,10 @@ blah blah <a :href="$api.someNamedLocation.asLink()">Go to some location</a> bla
 - normalizer
     - optional
     - Function used to translate camelCase javascript identifiers into the format of keys of the routeList.
+- rateLimitGET, rateLimitPUT, rateLimitPOST, rateLimitPATCH, rateLimitDELETE
+    - optional
+    - number of milliseconds to await minimum between calls to the API
+    - defaults to 125ms for each
 
 ## Usage Synopsis
 

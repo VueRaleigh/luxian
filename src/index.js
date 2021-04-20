@@ -25,6 +25,14 @@ export default {
             return routeName.replace(/[_.-]+/g, '-');
         };
 
+	const rateLimiter = interval => new Promise(resolve => setTimeout(resolve, interval));
+
+	const getMethodRateLimit = (options.rateLimitGET ? options.rateLimitGET : 125); // 1/8s
+	const putMethodRateLimit = (options.rateLimitPUT ? options.rateLimitPUT : 125); // 1/8s
+	const postMethodRateLimit = (options.rateLimitPOST ? options.rateLimitPOST : 125); // 1/8s
+	const patchMethodRateLimit = (options.rateLimitPATCH ? options.rateLimitPATCH : 125); // 1/8s
+	const deleteMethodRateLimit = (options.rateLimitDELETE ? options.rateLimitDELETE : 125); // 1/8s
+
         let normalizedRoutes = {};
         Object.getOwnPropertyNames(options.routesList).forEach(name => {
             normalizedRoutes[normalize(name)] = options.routesList[name];
@@ -77,18 +85,28 @@ export default {
                         return urlHelper().setQuery(reciever.query).route(urlName, reciever.params);
                     },
                     async get() {
+			await rateLimiter(getMethodRateLimit)
+
                         return http.get(urlHelper().setQuery(reciever.query).route(urlName, reciever.params));
                     },
                     async post(data) {
+			await rateLimiter(postMethodRateLimit)
+
                         return http.post(urlHelper().setQuery(reciever.query).route(urlName, reciever.params), data);
                     },
                     async put(data) {
+			await rateLimiter(putMethodRateLimit)
+
                         return http.put(urlHelper().setQuery(reciever.query).route(urlName, reciever.params), data);
                     },
                     async patch(data) {
+			await rateLimiter(patchMethodRateLimit)
+
                         return http.patch(urlHelper().setQuery(reciever.query).route(urlName, reciever.params), data);
                     },
                     async delete() {
+			await rateLimiter(deleteMethodRateLimit)
+
                         return http.delete(urlHelper().setQuery(reciever.query).route(urlName, reciever.params));
                     }
                 };
