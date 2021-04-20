@@ -89,7 +89,8 @@ describe('Luxian.test.js', () => {
 
   it('can formulate a GET request', async () => {
     expect.assertions(1);
-    expect(component.$api.currentUser.get()).resolves.toEqual(mockRouteList);
+    const getResult = await component.$api.currentUser.get()
+    expect(getResult).toEqual(mockRouteList);
   });
 
   it('can formulate PUT and POST requests with parameters, that take a payload', async () => {
